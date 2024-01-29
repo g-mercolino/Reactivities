@@ -14,7 +14,6 @@ namespace Application.Activities
         {
             //siccome vogliamo ottenere la lista di Axctivity, utilizziamo anche il constructor
             private readonly DataContext _context;
-            private readonly ILogger<List> _logger;
             public Handler(DataContext context)
             {
                 _context = context;                

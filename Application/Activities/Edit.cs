@@ -18,8 +18,8 @@ namespace Application.Activities
 
         public class Handler : IRequestHandler<Command>
         {
-        private readonly DataContext _context;
-        private readonly IMapper _mapper;
+            private readonly DataContext _context;
+            private readonly IMapper _mapper;
             public Handler(DataContext context, IMapper mapper)
             {
                 _mapper = mapper;
