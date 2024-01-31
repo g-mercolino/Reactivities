@@ -1,18 +1,19 @@
 import React from "react";
 import { Button, Card, Image } from "semantic-ui-react";
-import { Activity } from "../../../app/models/activity";
+import { useStore } from "../../../app/stores/store";
+import LoadingComponent from "../../../app/layout/LoadingComponent";
 
-interface Props {
-    activity: Activity;
-    openForm: (id: string) => void;
-    cancelSelectActivity: () => void;
-}
 
 //con fluid occuperà tutto lo spazio disponibile all'interno della griglia
-export default function ActivityDetails({activity, cancelSelectActivity, openForm}: Props) {
+export default function ActivityDetails() {
+    const {activityStore} = useStore();
+    const {selectedActivity: activity, openForm, cancelSelectActivity } = activityStore;
+
+    if(!activity) return <LoadingComponent/>;
+
     return (
         <Card fluid>
-            <Image src={`/public/assets/categoryImages/${activity.category}.jpg`} />
+            <Image src={`/assets/categoryImages/${activity.category}.jpg`} />
             <Card.Content>
                 <Card.Header>{activity.title}</Card.Header>
                 <Card.Meta>
