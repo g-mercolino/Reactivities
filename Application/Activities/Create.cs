@@ -1,7 +1,9 @@
 using Application.Core;
+using Application.Interfaces;
 using Domain;
 using FluentValidation;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Persistence;
 
@@ -28,9 +30,11 @@ namespace Application.Activities
         {
             private readonly DataContext _context;
             private readonly ILogger<Handler> _logger;
+            private readonly IUserAccessor _userAccessor;
 
-            public Handler(DataContext context,  ILogger<Handler> logger)
+            public Handler(DataContext context,  ILogger<Handler> logger, IUserAccessor userAccessor)
             {
+                _userAccessor = userAccessor;
                 _context = context;
                 _logger = logger;
             }
@@ -40,9 +44,20 @@ namespace Application.Activities
                 //aggiungiuamo Activity in memory quindi non usiamo il metodo Async
                 //siccome non stiamo toccando il DB
 
-
                 try
                 {
+                    var user = await _context.Users.FirstOrDefaultAsync(x => 
+                    x.UserName == _userAccessor.GetUsername());
+                    
+                    var attendee = new ActivityAttendee
+                    {
+                        AppUser = user,
+                        Activity = request.Activity,
+                        IsHost = true
+                    };
+
+                    request.Activity.Attendees.Add(attendee);
+
                     _context.Activities.Add(request.Activity);
 
                     var result = await _context.SaveChangesAsync() > 0;
